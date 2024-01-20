@@ -1,0 +1,75 @@
+- create venv: file>new project
+
+- set python interpreter
+
+- pip3 install 'django<4'
+
+- django-admin startproject drf_api .
+
+- pip install django-cloudinary-storage
+
+- pip install Pillow
+
+- settings.py
+    'cloudinary_storage',
+    'django.contrib.staticfiles',
+    'cloudinary',
+
+- PP_4>Creating empty django project in PyCharm:
+pip install dj_database_url==0.5.0 psycopg2 python-dotenv gunicorn
+
+- .gitignore
+.env
+venv/
+db.sqlite3
+screenshots/
+
+- .env
+SECRET_KEY=django-insecure-*ul7)(f)fmtschtlt2+lk%a2&+4nu_(0k=x-xt+id==j+cli+r
+CLOUDINARY_URL=cloudinary://737149144531711:18GdTVW7o4QgXQT09WmMxndlhOs@dkglcxx4y
+
+- settings.py
+from pathlib import Path
+import os
+from dotenv import load_dotenv
+import dj_database_url
+# Load environment variables from .env file
+load_dotenv()
+(at the very top, after importing)
+CLOUDINARY_STORAGE = {'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')}
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+- settings.py
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
+- git init
+
+- pip freeze requirements.txt
+
+- pip install django djangorestframework
+
+- settings.py
+'rest_framework',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- py manage.py startapp articles
+
+- add app to settings.py

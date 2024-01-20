@@ -1,0 +1,12 @@
+py manage.py makemigrations --dry-run
+python manage.py makemigrations
+python manage.py migrate --plan
+
+py manage.py runserver
+py manage.py createsuperuser
+
+pip install djangorestframework
+
+django-admin startproject <project_name> .
+py manage.py startapp <app_name>
+
