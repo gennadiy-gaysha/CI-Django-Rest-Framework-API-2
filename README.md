@@ -1,6 +1,7 @@
 ## Index
 
 - [Constraints](#constraints)
+- [Dot notation](#dot-notation)
 - [Signals](#signals)
 - [Statelessness](#statelessness)
 
@@ -16,6 +17,48 @@ Constraints in the context of Django REST Framework (DRF) refer to the rules or 
 - Query Parameter Constraints: These constraints limit how clients can use query parameters in their requests. For example, you might restrict which fields can be used for filtering or sorting data.
 
 By applying these constraints appropriately, you can ensure that your Django REST API is secure, efficient, and reliable. Each constraint type can be implemented using various components provided by Django and the Django REST Framework, such as serializers, permissions classes, validators, and throttling classes.
+
+[Back to top ⇧](#index)
+
+### Dot Notation
+To access a User field from a Profile instance:
+```python
+profile_instance = Profile.objects.get(id=some_id)
+user_field_value = profile_instance.owner.user_field
+```
+To access a field from the Profile model when you have a User instance:
+```python
+user_instance = User.objects.get(id=user_id)
+profile_field_value = user_instance.profile.profile_field
+```
+The profile in user_instance.profile is the default related name Django uses to refer back to the User from the Profile. If you set a custom related_name in your Profile model's OneToOneField, you'll use that name instead.
+
+Accessing Related Models from the User Model:
+
+When you have a built-in Django User model, it can access other models to which it has a defined relationship (either one-to-one, one-to-many, or many-to-many).
+The access to the related model is typically through a "related name". This "related name" is an attribute of the related model, which you can use to navigate back from the User model.
+For example, if the User model has a one-to-one relationship with a Profile model, and you have not set a custom related_name, you can access the profile from the user instance using user_instance.profile.
+Accessing the User Model from Custom Models:
+
+Custom models (like your Profile model) can access the User model through fields that establish a relationship with the User model.
+This is typically done through fields like ForeignKey, OneToOneField, or ManyToManyField.
+For instance, in your Profile model, if you have a OneToOneField linking to the User model (e.g., owner = models.OneToOneField(User, on_delete=models.CASCADE)), you can access the user instance associated with a profile instance using profile_instance.owner.
+
+Example for Clarity
+Let's consider an example where you have a custom Profile model with a one-to-one relationship to the User model.
+```python
+from django.db import models
+from django.contrib.auth.models import User
+
+class Profile(models.Model):
+    owner = models.OneToOneField(User, on_delete=models.CASCADE)
+    # other fields...
+```
+Accessing Profile from User: If you have a User instance, you can access its related Profile instance (if it exists) using user_instance.profile. Here, profile is the default related name Django uses for a OneToOneField relationship to the User model.
+
+Accessing User from Profile: Conversely, with a Profile instance, you can access its associated User instance using profile_instance.owner. Here, owner is the field you defined in the Profile model to establish the relationship with the User model.
+
+This mechanism of accessing related model instances is a fundamental aspect of Django's ORM (Object-Relational Mapping), allowing for efficient navigation and management of relationships between different models in a Django application.
 
 [Back to top ⇧](#index)
 
