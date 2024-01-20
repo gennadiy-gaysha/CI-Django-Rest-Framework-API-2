@@ -65,15 +65,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 - create configuration for py manage.py runserver
 
-
-
-
-
-
 - pip install django djangorestframework
 
 - settings.py
 'rest_framework',
+
+- pip freeze > requirements.txt
+
+
 
 
 
