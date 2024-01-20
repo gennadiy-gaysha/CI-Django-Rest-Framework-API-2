@@ -7,6 +7,31 @@ class Post(models.Model):
     Post model, related to 'owner', i.e. a User instance.
     Default image set so that we can always reference image.url.
     """
+    # Each choice is defined as a tuple, where the first element is the actual
+    # value to be set in the database, and the second element is a human-readable
+    # name for the choice.
+    image_filter_choices = [
+        ('1977', '1977'),
+        ('brannan', 'Brannan'),
+        ('earlybird', 'Earlybird'),
+        ('hudson', 'Hudson'),
+        ('inkwell', 'Inkwell'),
+        ('lofi', 'Lo-Fi'),
+        ('kelvin', 'Kelvin'),
+        ('normal', 'Normal'),
+        ('nashville', 'Nashville'),
+        ('rise', 'Rise'),
+        ('toaster', 'Toaster'),
+        ('valencia', 'Valencia'),
+        ('walden', 'Walden'),
+        ('xpro2', 'X-pro II')
+    ]
+    # default='normal': This sets the default value for image_filter. If no
+    # value is provided when a Post instance is created, image_filter will be
+    # set to 'normal'.
+    image_filter = models.CharField(
+        max_length=32, choices=image_filter_choices, default='normal'
+    )
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
