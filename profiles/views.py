@@ -11,6 +11,8 @@ from rest_framework.response import Response
 from .models import Profile
 from .serializers import ProfileSerializer
 
+from drf_api.permissions import IsOwnerOrReadOnly
+
 
 class ProfileList(APIView):
     # In DRF, when a request comes in, it's wrapped in a Request instance - request
@@ -19,7 +21,11 @@ class ProfileList(APIView):
         # It should be serialized into a format that can be converted to
         # JSON (or another format) and passed to the Response object
         profiles = Profile.objects.all()
-        serializer = ProfileSerializer(profiles, many=True)
+        # By passing the request object in the context, you make it available
+        # to the serializer. This is crucial because get_is_owner needs the
+        # request object to access the current user and compare it with the
+        # profile owner.
+        serializer = ProfileSerializer(profiles, many=True, context={'request': request})
         # The serializer.data (which is a Python dictionary) is passed to the
         # Response object. The Response class then automatically renders this
         # data into the appropriate content type (e.g., JSON) based on the
@@ -32,7 +38,10 @@ class ProfileList(APIView):
 
 class ProfileDetail(APIView):
     serializer_class = ProfileSerializer
-
+    # If permission_classes is set to [IsOwnerOrReadOnly] it means the
+    # IsOwnerOrReadOnly permission check will be applied to all requests handled by
+    # this view.
+    permission_classes = [IsOwnerOrReadOnly]
     # try-except Block: The get_object method uses a try-except block to handle
     # the possibility of the Profile instance not existing:
     # Try: It tries to retrieve the Profile instance with Profile.objects.get(pk=pk).
@@ -42,6 +51,13 @@ class ProfileDetail(APIView):
     def get_object(self, pk):
         try:
             profile = Profile.objects.get(pk=pk)
+            # This method checks the permissions specified in permission_classes
+            # against the retrieved Profile instance
+
+            # This is where IsOwnerOrReadOnly comes into play. It ensures that the
+            # user making the request is either the owner of the profile (for non-safe
+            # methods) or allows access to anyone (for safe methods).
+            # self.check_object_permissions(self.request, profile)
             return profile
         except Profile.DoesNotExist:
             raise Http404
@@ -56,7 +72,7 @@ class ProfileDetail(APIView):
     # pk from the database.
     def get(self, request, pk):
         profile = self.get_object(pk)
-        serializer = ProfileSerializer(profile)
+        serializer = ProfileSerializer(profile, context={'request': request})
         return Response(serializer.data)
 
     def put(self, request, pk):
@@ -77,7 +93,7 @@ class ProfileDetail(APIView):
         # to be updated and the data from the request (request.data). This step
         # deserializes the request data and initializes the serializer with the current
         # instance and the new data.
-        serializer = ProfileSerializer(profile, data=request.data)
+        serializer = ProfileSerializer(profile, data=request.data, context={'request': request})
         # so these two lines above interact on a server side in python format!
         if serializer.is_valid():
             serializer.save()
