@@ -1,6 +1,7 @@
 ## Index
 
 - [Constraints](#constraints)
+- [Signals](#signals)
 - [Statelessness](#statelessness)
 
 ### Constraints
@@ -15,6 +16,22 @@ Constraints in the context of Django REST Framework (DRF) refer to the rules or 
 - Query Parameter Constraints: These constraints limit how clients can use query parameters in their requests. For example, you might restrict which fields can be used for filtering or sorting data.
 
 By applying these constraints appropriately, you can ensure that your Django REST API is secure, efficient, and reliable. Each constraint type can be implemented using various components provided by Django and the Django REST Framework, such as serializers, permissions classes, validators, and throttling classes.
+
+[Back to top ⇧](#index)
+
+### Signals
+post_save is a signal in Django that is triggered after a model's save method is executed successfully. In Django, signals are a form of communication between different parts of an application and are used to perform actions in response to certain events.
+
+Understanding Django Signals
+- Django's signal dispatcher allows certain senders to notify a set of receivers when certain actions take place. There are several built-in signals that the Django model system provides, allowing developers to hook into various stages of the model lifecycle. These signals include pre_save, post_save, pre_delete, post_delete, and others.
+
+How post_save Works
+- Triggering: The post_save signal is sent after a model's save() method is called.
+- Parameters: This signal provides the sender (the model class), an instance of the model that was saved, a boolean indicating whether it was a new record (created=True for new records), and the raw and using arguments that were provided to the save() method.
+- Use Cases: Common use cases for the post_save signal include:
+	- Updating or processing data related to the saved instance.
+	- Invalidating caches that include the saved instance data.
+	- Sending notifications or triggering other actions that should happen after a model instance is saved.
 
 [Back to top ⇧](#index)
 

@@ -47,6 +47,29 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 - pip freeze requirements.txt
 
+- py manage.py startapp profiles
+
+- settings.py
+'profiles',
+
+- profiles/models>create Profile model
+
+- post_save.connect(create_profile, sender=User)
+
+- register Profile in profile>admin
+
+- python manage.py makemigrations
+- python manage.py migrate
+
+- py manage.py createsuperuser
+
+- create configuration for py manage.py runserver
+
+
+
+
+
+
 - pip install django djangorestframework
 
 - settings.py
