@@ -57,7 +57,7 @@ class ProfileDetail(APIView):
             # This is where IsOwnerOrReadOnly comes into play. It ensures that the
             # user making the request is either the owner of the profile (for non-safe
             # methods) or allows access to anyone (for safe methods).
-            # self.check_object_permissions(self.request, profile)
+            self.check_object_permissions(self.request, profile)
             return profile
         except Profile.DoesNotExist:
             raise Http404

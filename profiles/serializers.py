@@ -24,7 +24,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     # owner refers to the associated User object of the Profile
     # BUT!!! By default, when DRF encounters a foreign key relationship (like your
     # owner field in the Profile model, which is a OneToOneField to the User model),
-    # it represents this relationship using the primary key of the related object.
+    # it represents this relationship using the primary key of the related object (id).
 
     # if I want to make owner an object (User instance)
     # owner = UserSerializer()

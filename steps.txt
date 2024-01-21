@@ -72,6 +72,40 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 - pip freeze > requirements.txt
 
+- create Profile model...
+
+- create ProfileList view
+
+- add signal to it, register in Admin
+
+-create superuser to test signal
+
+- create ProfileSerializer and setup owner field with dot notation to get username
+
+- create get and put methods in profile detail view
+
+- add built-in login/out view
+
+- add object-level custom permission to the Profile
+
+- add SerializerMethodField to create customed serializer field
+
+- create post app and model
+
+- create post serializer and add customed fields using dot notation and SerializerMethodField
+
+- add choice of image filters and images upload validation
+
+- create PostList view with get and post methods
+
+- add permission to the vie to allow only authenticated user to create the post
+
+- create posts>urls.py for PostList view
+
+
+
+
+
 
 
 

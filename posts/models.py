@@ -26,12 +26,7 @@ class Post(models.Model):
         ('walden', 'Walden'),
         ('xpro2', 'X-pro II')
     ]
-    # default='normal': This sets the default value for image_filter. If no
-    # value is provided when a Post instance is created, image_filter will be
-    # set to 'normal'.
-    image_filter = models.CharField(
-        max_length=32, choices=image_filter_choices, default='normal'
-    )
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -39,6 +34,12 @@ class Post(models.Model):
     content = models.TextField(blank=True)
     image = models.ImageField(
         upload_to='images/', default='../default_post_hkwrh5', blank=True
+    )
+    # default='normal': This sets the default value for image_filter. If no
+    # value is provided when a Post instance is created, image_filter will be
+    # set to 'normal'.
+    image_filter = models.CharField(
+        max_length=32, choices=image_filter_choices, default='normal'
     )
 
     class Meta:
