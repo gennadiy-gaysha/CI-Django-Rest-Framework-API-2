@@ -2,6 +2,8 @@ from rest_framework import permissions
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
+  # self: Represents an instance of the IsOwnerOrReadOnly class.
+  #
   def has_object_permission(self, request, view, obj):
     # The method checks if the request's HTTP method is in permissions.SAFE_METHODS
     # (which includes GET, HEAD, and OPTIONS methods). These methods are considered
