@@ -98,9 +98,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 - create PostList view with get and post methods
 
-- add permission to the vie to allow only authenticated user to create the post
+- add permission to the view to allow only authenticated user to create the post
 
 - create posts>urls.py for PostList view
+
+- create Comments using generic API views
 
 
 

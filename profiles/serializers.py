@@ -51,7 +51,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         # The method then compares the user making the request (request.user)
         # with the owner of the profile (obj.owner). If they are the same, it
         # means the current user is the owner of the profile.
+        # return request.user == obj.owner
         return request.user == obj.owner
+
 
     class Meta:
         model = Profile
