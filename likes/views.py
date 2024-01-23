@@ -3,6 +3,8 @@ from drf_api.permissions import IsOwnerOrReadOnly
 from .serializers import LikeSerializer
 from .models import Like
 
+
+# See full description in comments/views.py
 class LikeList(generics.ListCreateAPIView):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
