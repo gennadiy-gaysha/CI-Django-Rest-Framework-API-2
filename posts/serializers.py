@@ -29,13 +29,20 @@ class PostSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user == obj.owner
 
+    # Method checks if the current authenticated user has liked the post
+    # represented by obj, and if so, it will return the ID of the Like instance
     def get_like_id(self, obj):
+        # Retrieves the current user from the request context.
+        # If the request is not authenticated, request.user would be an instance of
+        # django.contrib.auth.models.AnonymousUser
         user = self.context['request'].user
         if user.is_authenticated:
             # (my text) we filter only those Post instances on .../posts/, where
             # logged-in user (user) is the owner (field in Like model) of the like
             # and post object of Like instance (post) is the same as obj - serialized
             # instance of Post model
+            # (Chat GPT) Filters the Like model for an instance where the owner is
+            # the current user and the post is the post instance being serialized (obj)
             like = Like.objects.filter(owner=user, post=obj).first()
             return like.id if like else None
         return None

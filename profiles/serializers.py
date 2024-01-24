@@ -32,6 +32,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     # if I want to make owner an object (User instance)
     # owner = UserSerializer()
     owner = serializers.ReadOnlyField(source='owner.username')
+    posts_count=serializers.ReadOnlyField()
+    followers_count=serializers.ReadOnlyField()
+    following_count=serializers.ReadOnlyField()
     # This is an example of using a SerializerMethodField. This is a type of field
     # that is used in DRF serializers to add custom fields to your serialized data,
     # where the value of the field is computed by a method on the serializer class
@@ -46,7 +49,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     # When an instance of ProfileSerializer is used to serialize a Profile object, the
     # id_following_me field initializes as a SerializerMethodField. This field type tells
     # DRF to call a specific method on the serializer to get the value of the field.
-    id_following_me = serializers.SerializerMethodField()
+    # id_following_me = serializers.SerializerMethodField()
+    following_id = serializers.SerializerMethodField()
 
     # Defining the Method: To provide a value for a SerializerMethodField, you define
     # a method on the serializer class with a specific naming pattern: get_<field_name>.
@@ -66,7 +70,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         return request.user == obj.owner
 
     # The method named get_id_following_me is defined to provide the value for this field
-    def get_id_following_me(self, obj):
+    def get_following_id(self, obj):
         # Inside get_id_following_me, the method accesses the current request object from
         # the serializer context. This is necessary to determine the current user making
         # the request
@@ -74,6 +78,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         # The method checks if the current user is authenticated. If not, the method
         # returns None because an unauthenticated user cannot be following anyone.
         if user.is_authenticated:
+            # (my text) This line filters the Follower model
             # If the user is authenticated, the method queries the Follower model for
             # a relationship where the current user (owner) is following the profile's
             # owner (followed). It uses the .filter() method to search for this and then
@@ -109,15 +114,16 @@ class ProfileSerializer(serializers.ModelSerializer):
             ).first()
             #     def __str__(self):
             #         return f"{self.owner} {self.followed}"
-            print(following) # WE SEE THE RESULT BECAUSE OF THESE TWO LINES ABOVE
-            return {'following_id': following.id, 'following_username': following.owner.username} if following else None
+            # print(following) # WE SEE THE RESULT BECAUSE OF THESE TWO LINES ABOVE
+            # return {'following_id': following.id, 'following_username': following.owner.username} if following else None
+            return following.id if following else None
         return None
 
     class Meta:
         model = Profile
         fields = [
             'id', 'owner', 'created_at', 'updated_at', 'name',
-            'content', 'image', 'is_owner', 'id_following_me'
+            'content', 'image', 'is_owner', 'following_id', 'posts_count', 'followers_count', 'following_count'
         ]
 
 # user.following.all() fetches all instances of Follower where the specified user
