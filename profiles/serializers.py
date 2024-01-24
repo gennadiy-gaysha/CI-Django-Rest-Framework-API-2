@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+
+from followers.models import Follower
 from .models import Profile
+
 
 # if I want to make owner an object (User instance)
 # class UserSerializer(serializers.ModelSerializer):
@@ -37,6 +40,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     # Dynamic Content: The content of this field is not directly taken from the model
     # instance. Instead, it's determined by a method you define on the serializer.
     is_owner = serializers.SerializerMethodField()
+    # The id_following_me field is a custom field that is not directly tied to a model
+    # field. Instead, it is calculated at runtime using a method on the serializer class.
+
+    # When an instance of ProfileSerializer is used to serialize a Profile object, the
+    # id_following_me field initializes as a SerializerMethodField. This field type tells
+    # DRF to call a specific method on the serializer to get the value of the field.
+    id_following_me = serializers.SerializerMethodField()
+
     # Defining the Method: To provide a value for a SerializerMethodField, you define
     # a method on the serializer class with a specific naming pattern: get_<field_name>.
     # For your field is_owner, the method should be named get_is_owner.
@@ -54,11 +65,65 @@ class ProfileSerializer(serializers.ModelSerializer):
         # return request.user == obj.owner
         return request.user == obj.owner
 
+    # The method named get_id_following_me is defined to provide the value for this field
+    def get_id_following_me(self, obj):
+        # Inside get_id_following_me, the method accesses the current request object from
+        # the serializer context. This is necessary to determine the current user making
+        # the request
+        user = self.context['request'].user
+        # The method checks if the current user is authenticated. If not, the method
+        # returns None because an unauthenticated user cannot be following anyone.
+        if user.is_authenticated:
+            # If the user is authenticated, the method queries the Follower model for
+            # a relationship where the current user (owner) is following the profile's
+            # owner (followed). It uses the .filter() method to search for this and then
+            # calls .first() to get the first instance that matches the criteria, if any.
+            following = Follower.objects.filter(
+                # owner=user: This is a filter condition. owner is a field in the Follower
+                # model that refers to the user who is following someone. In this context,
+                # user is a variable that typically represents the current authenticated user
+                # making the request. So, owner=user means "find (work only with) Follower
+                # instances where the owner is the current user.
+                # owner=user is essentially looking for Follower instances where the
+                # follower (the one who follows someone else) is the current user.
+
+                # followed=obj.owner: This is another filter condition. followed is
+                # a field in the Follower model that refers to the user who is being
+                # followed. obj is the current instance of the object being serialized
+                # by ProfileSerializer. obj.owner refers to the owner of that profile.
+                # So, followed=obj.owner means "find Follower instances where the
+                # followed user is the owner of the profile being serialized".
+
+                # When you use Follower.objects.filter(owner=user, followed=obj.owner),
+                # you're asking, "Show me if the current user is following the owner of
+                # this profile instance."
+
+                # followed=obj.owner means "find all the relationships where the owner
+                # of this profile is the one being followed".
+
+                # obj is the parameter passed to the method get_id_following_me. It
+                # represents the instance of the Profile model that is currently being
+                # serialized.
+
+                owner=user, followed=obj.owner
+            ).first()
+            #     def __str__(self):
+            #         return f"{self.owner} {self.followed}"
+            print(following) # WE SEE THE RESULT BECAUSE OF THESE TWO LINES ABOVE
+            return {'following_id': following.id, 'following_username': following.owner.username} if following else None
+        return None
 
     class Meta:
         model = Profile
         fields = [
             'id', 'owner', 'created_at', 'updated_at', 'name',
-            'content', 'image', 'is_owner',
+            'content', 'image', 'is_owner', 'id_following_me'
         ]
 
+# user.following.all() fetches all instances of Follower where the specified user
+# is the owner (i.e., the one who initiated the following relationship).
+# It's a way to get all the users that a specific user is following.
+
+# user.followed.all() fetches all instances of Follower where the specified user is
+# the followed (i.e., the one being followed).
+# It's a way to get all the users who are following a specific user.
