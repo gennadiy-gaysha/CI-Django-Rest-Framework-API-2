@@ -2,6 +2,7 @@ from rest_framework import generics, permissions
 from drf_api.permissions import IsOwnerOrReadOnly
 from .models import Comment
 from .serializers import CommentSerializer, CommentDetailSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 # CommentList is a class that inherits from generics.ListCreateAPIView.
@@ -25,6 +26,11 @@ class CommentList(generics.ListCreateAPIView):
     # only authenticated users can create new comments (POST request), but any
     # user (authenticated or not) can read the list of comments (GET request).
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = [
+        # retrieve all the comments associated with a given post.
+        'post',
+    ]
 
     # This method is overridden from the parent class. It's called when a new
     # Comment instance is being created (i.e., when a POST request is made to
