@@ -14,8 +14,9 @@ class PostList(generics.ListCreateAPIView):
     ).order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    filter_backends = [filters.OrderingFilter]
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['likes_count', 'comments_count', 'likes__created_at',]
+    search_fields=['owner__username', 'title']
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
