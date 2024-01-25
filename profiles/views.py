@@ -3,6 +3,7 @@ from rest_framework import generics, filters
 from drf_api.permissions import IsOwnerOrReadOnly
 from .serializers import ProfileSerializer
 from .models import Profile
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 # posts_count
@@ -16,7 +17,7 @@ class ProfileList(generics.ListAPIView):
         following_count=Count('owner__following', distinct=True)
     ).order_by('-created_at')
     serializer_class = ProfileSerializer
-    filter_backends = [filters.OrderingFilter]
+    filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
     ordering_fields = [
         'posts_count',
         'followers_count',
@@ -25,6 +26,8 @@ class ProfileList(generics.ListAPIView):
         'owner__followed__created_at',
 
     ]
+    # filter user profiles that  follow a user with a given profile_id.
+    filterset_fields = ['owner__following__followed__profile']
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

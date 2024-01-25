@@ -8,6 +8,7 @@ py manage.py runserver
 py manage.py createsuperuser
 
 pip install djangorestframework
+pip install django-filter
 
 pip freeze > requirements.txt
 
