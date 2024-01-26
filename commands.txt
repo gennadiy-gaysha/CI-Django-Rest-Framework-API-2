@@ -12,5 +12,7 @@ pip install django-filter
 
 pip freeze > requirements.txt
 
+pip3 install django-cors-headers
+
 
 
