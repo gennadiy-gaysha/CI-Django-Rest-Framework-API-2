@@ -55,7 +55,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.environ.get('DEV') == '1'
-DEBUG = os.environ.get('DEV') == '1' and 'DYNO' not in os.environ
+# DEBUG = os.environ.get('DEV') == '1' and 'DYNO' not in os.environ
+DEBUG = False
 
 ALLOWED_HOSTS = ["127.0.0.1", 'drf-api-app-gaysha-repeat-150999686cdd.herokuapp.com']
 
