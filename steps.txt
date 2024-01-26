@@ -6,6 +6,8 @@
 
 - django-admin startproject drf_api .
 
+- create configuration for py manage.py runserver
+
 - pip install django-cloudinary-storage
 
 - pip install Pillow
@@ -54,7 +56,15 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 - profiles/models>create Profile model
 
-- post_save.connect(create_profile, sender=User)
+- Create signal:
+You can think of signals as notifications that  get triggered by an event. We can
+listen for such Model events and have some code, usually a  function, run each time
+that signal is received.
+In our case, we would want to be notified when a user is created so that a profile
+can  automatically be created alongside it.
+[profiles/models.py]
+<def create_profile(...)>
+<post_save.connect(create_profile, sender=User)>
 
 - register Profile in profile>admin
 
@@ -63,8 +73,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 - py manage.py createsuperuser
 
-- create configuration for py manage.py runserver
-
 - pip install django djangorestframework
 
 - settings.py
@@ -72,35 +80,64 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 - pip freeze > requirements.txt
 
-- create Profile model...
+- [profiles/views]
+create ProfileList view with get()
 
-- create ProfileList view
+- Create path for ProfileList
+[drf/... and profiles/... urls]
 
-- add signal to it, register in Admin
+- create ProfileSerializer
+setup owner field with dot notation to get username
+<owner = serializers.ReadOnlyField(source='owner.username')>
 
--create superuser to test signal
+- Add ProfileSerializer to ProfileList
 
-- create ProfileSerializer and setup owner field with dot notation to get username
+- Create ProfileDetail view:
+get_object>get()
 
-- create get and put methods in profile detail view
+- [profiles/urls]
+<path('profiles/<int:pk>/', views.ProfileDetail.as_view())>
 
-- add built-in login/out view
+- Add put method to ProfileDetail view
 
-- add object-level custom permission to the Profile
+- Add form for editing profile details
+<serializer_class = ProfileSerializer>
 
-- add SerializerMethodField to create customed serializer field
+- Add in-browser login, logout
+[drf_api/urls]
+<path('api-auth/', include('rest_framework.urls')),>
 
-- create post app and model
+- Writing custom permission IsOwnerOrReadOnly
+Predefined permissions:
+AllowAny, IsAuthenticated,  IsAdminUser and more;
+Custom permissions (BasePermission - to write cp):
+in our case it's an object-level permission -
+we have to check the profile model instance object so that it's owner field was the same
+as user, who makes the request
+[drf_api/permissions]
+[profiles/views>ProfileDetail>get_object()]
+=> only logged_in users can update their profile
 
-- create post serializer and add customed fields using dot notation and SerializerMethodField
+- Add an extra field "is_owner" to ProfileSerializer
+[profiles/serializers]
+<is_owner = serializers.SerializerMethodField()>
+<def get_is_owner(self, obj): ...>
+<user = self.context['request'].user>
 
-- add choice of image filters and images upload validation
+- Create posts app, Post model and PostSerializer with custom fields
+
+- Add choice of image filters ("image_filter" field) and images upload validation
 
 - create PostList view with get and post methods
 
 - add permission to the view to allow only authenticated user to create the post
 
 - create posts>urls.py for PostList view
+
+- create PostDetail view with get and put and delete methods
+
+
+
 
 - create Comments using generic API views
 
