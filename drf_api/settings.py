@@ -58,7 +58,19 @@ DEBUG = os.environ.get('DEV') == '1'
 
 
 
-ALLOWED_HOSTS = ["127.0.0.1", 'drf-api-app-gaysha-repeat-150999686cdd.herokuapp.com']
+# ALLOWED_HOSTS = ["127.0.0.1", 'drf-api-app-gaysha-repeat-150999686cdd.herokuapp.com']
+# CI:
+# ALLOWED_HOSTS = [
+#    os.environ.get('ALLOWED_HOST'),
+#    'localhost',
+# ]
+# ChatGPT:
+# Dynamically set the ALLOWED_HOSTS from environment variable
+# ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1').split(',')
+# Dynamically set the ALLOWED_HOSTS with a default fallback
+ALLOWED_HOSTS = [
+   os.environ.get('ALLOWED_HOST', '127.0.0.1'),
+]
 
 # Application definition
 
