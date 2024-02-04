@@ -116,6 +116,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# ===============================================================================
 # Here the allowed origins are set for the network requests made to the server.
 # The API will use the CLIENT_ORIGIN variable, which is the front end app's url.
 # We haven't deployed that project yet, but that's ok. If the variable is not
@@ -129,6 +130,26 @@ else:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         r"^https://.*\.gitpod\.io$",
     ]
+# ===============================================================================
+# To connect your development version of the React project to your Django REST
+# Framework (DRF) API deployed on Heroku, you'll need to allow your local development
+# environment to make requests to the Heroku-deployed API. This involves setting up
+# CORS (Cross-Origin Resource Sharing) properly in your Django settings to accept
+# requests from both your deployed React app and your local development environment.
+# Include both production and development clients in CORS_ALLOWED_ORIGINS
+cors_origins = [os.environ.get('CLIENT_ORIGIN')]
+# Add development client if CLIENT_ORIGIN_DEV is set
+if 'CLIENT_ORIGIN_DEV' in os.environ:
+    cors_origins.append(os.environ.get('CLIENT_ORIGIN_DEV'))
+
+# Now set CORS_ALLOWED_ORIGINS with the updated list
+if cors_origins:
+    CORS_ALLOWED_ORIGINS = cors_origins
+else:
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        r"^https://.*\.gitpod\.io$",
+    ]
+
 # Enable sending cookies in cross-origin requests so
 # that users can get authentication functionality
 CORS_ALLOW_CREDENTIALS = True
