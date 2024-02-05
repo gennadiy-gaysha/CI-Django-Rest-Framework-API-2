@@ -117,38 +117,29 @@ MIDDLEWARE = [
 ]
 
 # ===============================================================================
-# Here the allowed origins are set for the network requests made to the server.
-# The API will use the CLIENT_ORIGIN variable, which is the front end app's url.
-# We haven't deployed that project yet, but that's ok. If the variable is not
-# present, that means the project is still in development, so then the regular
-# expression in the else statement will allow requests that are coming from your IDE.
-if 'CLIENT_ORIGIN' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN')
-    ]
-else:
+# All ChatGPT explanations see at the very bottom.
+# Initialize an empty list for CORS origins
+cors_origins = []
+
+# Get the CLIENT_ORIGIN from the environment and append it if it exists
+client_origin = os.environ.get('CLIENT_ORIGIN')
+if client_origin:
+    cors_origins.append(client_origin)
+
+# Get the CLIENT_ORIGIN_DEV from the environment and append it if it exists
+client_origin_dev = os.environ.get('CLIENT_ORIGIN_DEV')
+if client_origin_dev:
+    cors_origins.append(client_origin_dev)
+
+# Now, ensure CORS_ALLOWED_ORIGINS is always a list, even if empty or filled based on conditions
+CORS_ALLOWED_ORIGINS = cors_origins
+
+# If there are no specific CLIENT_ORIGIN or CLIENT_ORIGIN_DEV, you might want to specify a default or fallback
+if not CORS_ALLOWED_ORIGINS:
     CORS_ALLOWED_ORIGIN_REGEXES = [
         r"^https://.*\.gitpod\.io$",
     ]
 # ===============================================================================
-# To connect your development version of the React project to your Django REST
-# Framework (DRF) API deployed on Heroku, you'll need to allow your local development
-# environment to make requests to the Heroku-deployed API. This involves setting up
-# CORS (Cross-Origin Resource Sharing) properly in your Django settings to accept
-# requests from both your deployed React app and your local development environment.
-# Include both production and development clients in CORS_ALLOWED_ORIGINS
-cors_origins = [os.environ.get('CLIENT_ORIGIN')]
-# Add development client if CLIENT_ORIGIN_DEV is set
-if 'CLIENT_ORIGIN_DEV' in os.environ:
-    cors_origins.append(os.environ.get('CLIENT_ORIGIN_DEV'))
-
-# Now set CORS_ALLOWED_ORIGINS with the updated list
-if cors_origins:
-    CORS_ALLOWED_ORIGINS = cors_origins
-else:
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        r"^https://.*\.gitpod\.io$",
-    ]
 
 # Enable sending cookies in cross-origin requests so
 # that users can get authentication functionality
@@ -232,3 +223,77 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# ===============================================================================
+# The provided code is a configuration snippet for a Django project that uses the
+# django-cors-headers library to manage Cross-Origin Resource Sharing (CORS) settings.
+# CORS is a security feature that browsers implement to restrict web pages from making
+# requests to a different domain than the one that served the web page, unless the
+# server at the other domain explicitly allows it. This code dynamically configures
+# which client origins are allowed to make cross-origin requests to your Django backend.
+# Here's a breakdown of how the code works:
+
+# Initializing an Empty List for CORS Origins:
+
+# cors_origins = []
+
+# This line initializes an empty list named cors_origins. This list will be used to
+# store the URLs of the client applications (such as your React frontend) that are allowed
+# to make requests to your Django backend.
+
+# Getting CLIENT_ORIGIN from the Environment:
+
+# client_origin = os.environ.get('CLIENT_ORIGIN')
+# if client_origin:
+#     cors_origins.append(client_origin)
+
+# This section attempts to retrieve a value for CLIENT_ORIGIN from the environment
+# variables, which should be the URL of your deployed client application (for example,
+# your React app hosted on a service like Netlify or Vercel). If CLIENT_ORIGIN is
+# found and is not None, it's added to the cors_origins list. This setup allows you
+# to configure the allowed origin(s) without hardcoding them into your source code,
+# making your application more secure and easier to manage, especially when moving
+# between different environments (development, staging, production, etc.).
+
+# Getting CLIENT_ORIGIN_DEV from the Environment:
+
+# client_origin_dev = os.environ.get('CLIENT_ORIGIN_DEV')
+# if client_origin_dev:
+#     cors_origins.append(client_origin_dev)
+
+# Similarly, this section retrieves the CLIENT_ORIGIN_DEV environment variable,
+# intended to represent the URL of your local development environment for the client
+# application (commonly http://localhost:3000 for React development servers). If it
+# exists, it's also added to the cors_origins list. This allows you to work on your
+# application locally, making API requests to your Django backend without facing CORS
+# errors.
+
+# Ensuring CORS_ALLOWED_ORIGINS Is Always a List:
+
+# CORS_ALLOWED_ORIGINS = cors_origins
+
+# This line assigns the cors_origins list to the CORS_ALLOWED_ORIGINS setting used by
+# django-cors-headers. This setting defines which origins are permitted to make
+# cross-origin requests to your backend. It must be a list of strings representing the
+# allowed origins.
+
+# Specifying a Fallback with CORS_ALLOWED_ORIGIN_REGEXES:
+
+# if not CORS_ALLOWED_ORIGINS:
+#     CORS_ALLOWED_ORIGIN_REGEXES = [
+#         r"^https://.*\.gitpod\.io$",
+#     ]
+
+# If no specific client origins are configured (i.e., if CORS_ALLOWED_ORIGINS is empty),
+# this code sets up a fallback using CORS_ALLOWED_ORIGIN_REGEXES. This setting allows
+# you to specify a list of regular expressions that match against the Origin header of
+# incoming requests. In this case, it's configured to allow requests from any subdomain
+# of gitpod.io, which is useful if you're using Gitpod as a cloud development environment.
+
+# Summary:
+# This code dynamically configures your Django application to accept cross-origin requests
+# from specified client applications. It enhances security by allowing you to specify
+# allowed origins through environment variables, supports both production and development
+# environments by enabling different origins for each, and provides flexibility through
+# the use of regular expressions for matching origins.
+
+
