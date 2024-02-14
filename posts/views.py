@@ -31,8 +31,8 @@ class PostList(generics.ListCreateAPIView):
         # fields or to apply filters on fields of related models.
         # 3) 'owner': This is a field in the Like model, which is a ForeignKey to the User
         # model. It indicates the user who created the like.
-        # 'likes__owner__profile', - CI suggestion
-        'likes__owner',
+        'likes__owner__profile', # CI suggestion
+        # 'likes__owner', # my suggestion
         'owner__profile',
     ]
 
