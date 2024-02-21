@@ -38,7 +38,7 @@ class ProfileList(generics.ListAPIView):
         serializer.save(owner=self.request.user)
 
 
-class ProfileDetail(generics.RetrieveDestroyAPIView):
+class ProfileDetail(generics.RetrieveUpdateAPIView):
     # queryset = Profile.objects.all()
     queryset = Profile.objects.annotate(
         posts_count=Count('owner__post', distinct=True),
