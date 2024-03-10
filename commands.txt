@@ -1,4 +1,8 @@
+pip3 install Django==3.2
 django-admin startproject <project_name> .
+pip install django-cloudinary-storage==0.3.0
+
+
 py manage.py startapp <app_name>
 
 py manage.py makemigrations --dry-run

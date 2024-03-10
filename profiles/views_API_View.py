@@ -1,7 +1,7 @@
 # - receive Request instances in your view
 # - handle parsing errors
 # - add  context to Response objects
-# -extends Django's basic view functionality to provide a set of HTTP method handlers
+# - extends Django's basic view functionality to provide a set of HTTP method handlers
 # such as get(), post(), put(), delete(), etc., that you can override to define the
 # behavior of your API.
 from django.http import Http404
@@ -42,6 +42,7 @@ class ProfileDetail(APIView):
     # IsOwnerOrReadOnly permission check will be applied to all requests handled by
     # this view.
     permission_classes = [IsOwnerOrReadOnly]
+
     # try-except Block: The get_object method uses a try-except block to handle
     # the possibility of the Profile instance not existing:
     # Try: It tries to retrieve the Profile instance with Profile.objects.get(pk=pk).

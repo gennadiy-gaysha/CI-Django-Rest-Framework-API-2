@@ -61,7 +61,7 @@ class CommentSerializer(serializers.ModelSerializer):
 # CommentSerializer. This means it will have fields like id, owner, is_owner,
 # profile_id, profile_image, created_at, updated_at, and content.
 class CommentDetailSerializer(CommentSerializer):
-    post = serializers.ReadOnlyField(source='post.id')
+    post = serializers.ReadOnlyField(source='painting.id')
 
 # By having two serializers:
 # CommentSerializer can be used for creating comments where the post field is writable.

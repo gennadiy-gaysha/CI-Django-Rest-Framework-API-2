@@ -79,7 +79,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         # returns None because an unauthenticated user cannot be following anyone.
         if user.is_authenticated:
             # (my text) This line filters the Follower model
-            # If the user is authenticated, the method queries the Follower model for
+            # If user is authenticated, the method queries the Follower model for
             # a relationship where the current user (owner) is following the profile's
             # owner (followed). It uses the .filter() method to search for this and then
             # calls .first() to get the first instance that matches the criteria, if any.
